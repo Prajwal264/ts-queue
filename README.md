@@ -3,19 +3,13 @@
 ## Overview
 The Queue library provides a simple and efficient way to manage a queue of messages in your Node.js applications. It allows you to post messages to the queue and subscribe to process those messages asynchronously.
 
-## Installation
-You can install the Queue library using npm:
-
-npm install my-queue-library
-
-python
-Copy code
-
 ## Usage
-First, import the Queue class and the `delay` function from the library:
+First, import the Queue class from the library:
+
 ```typescript
 import { Queue } from 'my-queue-library';
 ```
+
 Create an instance of the Queue class:
 
 ```typescript
