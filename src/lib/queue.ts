@@ -1,12 +1,12 @@
 import { delay } from "./utils";
 
-export interface QueueConfig {
+export interface IQueueConfig {
   waitTimePerMessage: number;
 }
 
 export class Queue<T> {
 
-  private config: QueueConfig = {
+  private config: IQueueConfig = {
     waitTimePerMessage: 1000
   }
 
@@ -14,7 +14,7 @@ export class Queue<T> {
 
   private initialized = false;
 
-  constructor(config?: QueueConfig) {
+  constructor(config?: IQueueConfig) {
     if (config) {
       this.config = config;
     }
@@ -41,7 +41,7 @@ export class Queue<T> {
     return removedMessage;
   }
 
-  async subscribe(callbackFn: (arg: T) => any) {
+  async subscribe(callbackFn: (arg: T) => Promise<void>) {
     if (!this.initialized) {
       console.log("Queue is not initialized");
       return;
@@ -51,7 +51,12 @@ export class Queue<T> {
       if (this.messages.length) {
         console.log("Processing message");
         const message = this.consume();
-        await callbackFn(message);
+        await callbackFn(message).catch(() => {
+          // if any error occurs, lets push the message back to the queue, so that it can be processed again
+          // TODO: if there is a runtime error, the message will keep retrying forever. We need to have a retry count for each message. 
+          //       any message pushed to a dead-letter queue will be kept stagnant until processing is triggered
+          this.messages.push(message);
+        });
         console.log("Message processed successfully");
       }
     }

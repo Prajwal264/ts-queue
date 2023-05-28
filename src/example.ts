@@ -1,7 +1,7 @@
 import { queue } from "./index";
 import { delay } from "./lib/utils";
 
-const messageHandler = (message: Object) => {
+const messageHandler = async (message: Object) => {
   console.log('message: ', message);
 }
 
